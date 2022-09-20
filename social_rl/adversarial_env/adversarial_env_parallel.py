@@ -1,5 +1,6 @@
 # coding=utf-8
 # Copyright 2022 The Google Research Authors.
+# Modifications copyright (C) 2022 Cl4ryty, goody139
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -158,6 +159,7 @@ class AdversarialParallelPyEnvironment(py_environment.PyEnvironment):
     Returns:
       Batch of observations, rewards, and done flags.
     """
+
     time_steps = [
         env.step(action, self._blocking)
         for env, action in zip(self._envs, self._unstack_actions(actions))]
@@ -218,14 +220,6 @@ class AdversarialParallelPyEnvironment(py_environment.PyEnvironment):
       return tf.stack(
           [tf.cast(env.n_clutter_placed, tf.float32) for env in self._envs])
 
-  def get_distance_to_goal(self):
-    if self._num_envs == 1:
-      return nest_utils.batch_nested_array(
-          tf.cast(self._envs[0].distance_to_goal, tf.float32))
-    else:
-      return tf.stack(
-          [tf.cast(env.distance_to_goal, tf.float32) for env in self._envs])
-
   def get_deliberate_placement(self):
     if self._num_envs == 1:
       return nest_utils.batch_nested_array(
@@ -235,37 +229,36 @@ class AdversarialParallelPyEnvironment(py_environment.PyEnvironment):
           [tf.cast(env.deliberate_agent_placement,
                    tf.float32) for env in self._envs])
 
-  def get_goal_x(self):
-    if self._num_envs == 1:
-      return nest_utils.batch_nested_array(
-          tf.cast(self._envs[0].get_goal_x(), tf.float32))
-    else:
-      return tf.stack(
-          [tf.cast(env.get_goal_x(), tf.float32) for env in self._envs])
+# # # # # # # # # # # # # # # # # # # # # # code added start # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-  def get_goal_y(self):
+  def get_num_found_tiles(self):
     if self._num_envs == 1:
-      return nest_utils.batch_nested_array(
-          tf.cast(self._envs[0].get_goal_y(), tf.float32))
+      return nest_utils.batch_nested_tensors(
+        tf.cast(self._envs[0].num_found_tiles, tf.float32))
     else:
       return tf.stack(
-          [tf.cast(env.get_goal_y(), tf.float32) for env in self._envs])
+          [tf.cast(env.num_found_tiles,
+                   tf.float32) for env in self._envs])
 
-  def get_passable(self):
+  def get_num_tiles_to_map_completion(self):
     if self._num_envs == 1:
-      return nest_utils.batch_nested_array(
-          tf.cast(self._envs[0].passable, tf.float32))
+      return nest_utils.batch_nested_tensors(
+        tf.cast(self._envs[0].tiles_to_map_completion, tf.float32))
     else:
       return tf.stack(
-          [tf.cast(env.passable, tf.float32) for env in self._envs])
+        [tf.cast(env.tiles_to_map_completion,
+                 tf.float32) for env in self._envs])
 
-  def get_shortest_path_length(self):
+  def get_findable_tiles(self):
     if self._num_envs == 1:
-      return nest_utils.batch_nested_array(
-          tf.cast(self._envs[0].shortest_path_length, tf.float32))
+      return nest_utils.batch_nested_tensors(
+        tf.cast(self._envs[0].findable_tiles, tf.float32))
     else:
       return tf.stack(
-          [tf.cast(env.shortest_path_length, tf.float32) for env in self._envs])
+        [tf.cast(env.findable_tiles,
+                 tf.float32) for env in self._envs])
+
+# # # # # # # # # # # # # # # # # # # # # # code added end # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
   def close(self):
     """Close all external process."""
@@ -304,6 +297,20 @@ class AdversarialParallelPyEnvironment(py_environment.PyEnvironment):
     promises = [env.call('seed', seed) for seed, env in zip(seeds, self._envs)]
     # Block until all envs are seeded.
     return [promise() for promise in promises]
+
+  def render(self):
+    time_steps = [
+      env.render()
+      for env in self._envs]
+
+    return self._stack_time_steps(time_steps)
+
+  def render_env_and_map(self):
+    time_steps = [
+      env.render_env_and_map()
+      for env in self._envs]
+
+    return time_steps
 
 
 class AdversarialProcessPyEnvironment(object):
@@ -548,7 +555,6 @@ class AdversarialProcessPyEnvironment(object):
         if message == self._CLOSE:
           assert payload is None
           env.close()
-          break
         raise KeyError('Received message of unknown type {}'.format(message))
     except Exception:  # pylint: disable=broad-except
       etype, evalue, tb = sys.exc_info()

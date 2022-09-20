@@ -1,0 +1,207 @@
+---
+title: "DRL_Final_Project"
+output: html_document
+date: "2022-09-19"
+---
+
+```{r setup, include=FALSE}
+# remember to set the wd to the dir where this file is located (session > set wd > to source file location)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(rstudioapi)
+library(lubridate)
+```
+
+
+```{r echo = FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+# load the data
+path <- "Results/Data/Tiles_Found"
+
+read_plus <- function(flnm) {
+    read_csv(flnm) %>% 
+        mutate(filename = flnm)
+}
+
+
+tbl_with_sources <-
+    list.files(path= path, pattern = "*.csv", 
+               full.names = T) %>% 
+    map_df(~read_plus(.))
+
+d <- tbl_with_sources %>% mutate(algorithm = substring(filename, nchar(path)+2, nchar(filename)-4))
+
+# SVG graphics device
+svg("Results/Plots/TilesFound.svg", width=6.5, height=5)
+
+ggplot(d)+
+  geom_point(aes(x=Step, y=Value, color=algorithm))+
+  geom_line(aes(x=Step, y=Value, color=algorithm))+
+  labs(x = "training steps",
+       y = "Tiles Found"
+       )+
+  theme_minimal()
+
+# Close the graphics device
+dev.off()
+
+
+# SVG graphics device
+svg("Results/Plots/RewardTilesFound.svg", width=6.5, height=5)
+
+ggplot(d[d$algorithm %in% c('PAIRED','PAIRED no negative reward'),])+
+  geom_point(aes(x=Step, y=Value, color=algorithm))+
+  geom_line(aes(x=Step, y=Value, color=algorithm))+
+  labs(x = "training steps",
+       y = "Tiles Found"
+       )+
+  theme_minimal()
+
+# Close the graphics device
+dev.off()
+
+```
+
+```{r echo = FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+# load the data
+path <- "Results/Data/Findable Tiles"
+
+read_plus <- function(flnm) {
+    read_csv(flnm) %>% 
+        mutate(filename = flnm)
+}
+
+
+tbl_with_sources <-
+    list.files(path= path, pattern = "*.csv", 
+               full.names = T) %>% 
+    map_df(~read_plus(.))
+
+d <- tbl_with_sources %>% mutate(algorithm = substring(filename, nchar(path)+2, nchar(filename)-4))
+
+# SVG graphics device
+svg("Results/Plots/FindableTiles.svg", width=6.5, height=5)
+
+ggplot(d)+
+  geom_point(aes(x=Step, y=Value, color=algorithm))+
+  geom_line(aes(x=Step, y=Value, color=algorithm))+
+  labs(x = "training steps",
+       y = "Findable Tiles"
+       )+
+  theme_minimal()
+
+
+# Close the graphics device
+dev.off()
+
+# SVG graphics device
+svg("Results/Plots/RewardFindableTiles.svg", width=6.5, height=5)
+
+ggplot(d[d$algorithm %in% c('PAIRED','PAIRED no negative reward'),])+
+  geom_point(aes(x=Step, y=Value, color=algorithm))+
+  geom_line(aes(x=Step, y=Value, color=algorithm))+
+  labs(x = "training steps",
+       y = "Findable Tiles"
+       )+
+  theme_minimal()
+
+
+# Close the graphics device
+dev.off()
+
+```
+
+```{r echo = FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+# load the data
+path <- "Results/Data/Num Blocks"
+
+read_plus <- function(flnm) {
+    read_csv(flnm) %>% 
+        mutate(filename = flnm)
+}
+
+
+tbl_with_sources <-
+    list.files(path= path, pattern = "*.csv", 
+               full.names = T) %>% 
+    map_df(~read_plus(.))
+
+d <- tbl_with_sources %>% mutate(algorithm = substring(filename, nchar(path)+2, nchar(filename)-4))
+
+# SVG graphics device
+svg("Results/Plots/NumBlocks.svg", width=6.5, height=5)
+
+ggplot(d)+
+  geom_point(aes(x=Step, y=Value, color=algorithm))+
+  geom_line(aes(x=Step, y=Value, color=algorithm))+
+  labs(x = "training steps",
+       y = "Num Blocks"
+       )+
+  theme_minimal()
+
+# Close the graphics device
+dev.off()
+
+# SVG graphics device
+svg("Results/Plots/RewardNumBlocks.svg", width=6.5, height=5)
+
+ggplot(d[d$algorithm %in% c('PAIRED','PAIRED no negative reward'),])+
+  geom_point(aes(x=Step, y=Value, color=algorithm))+
+  geom_line(aes(x=Step, y=Value, color=algorithm))+
+  labs(x = "training steps",
+       y = "Num Blocks"
+       )+
+  theme_minimal()
+
+# Close the graphics device
+dev.off()
+
+```
+
+```{r echo = FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+# load the data
+path <- "Results/Data/Tiles_to_MapCompletion"
+
+read_plus <- function(flnm) {
+    read_csv(flnm) %>% 
+        mutate(filename = flnm)
+}
+
+
+tbl_with_sources <-
+    list.files(path= path, pattern = "*.csv", 
+               full.names = T) %>% 
+    map_df(~read_plus(.))
+
+d <- tbl_with_sources %>% mutate(algorithm = substring(filename, nchar(path)+2, nchar(filename)-4))
+
+# SVG graphics device
+svg("Results/Plots/TilesToMapCompletion.svg", width=6.5, height=5)
+
+ggplot(d)+
+  geom_point(aes(x=Step, y=Value, color=algorithm))+
+  geom_line(aes(x=Step, y=Value, color=algorithm))+
+  labs(x = "training steps",
+       y = "Tiles to Map Completion"
+       )+
+  theme_minimal()
+
+# Close the graphics device
+dev.off()
+
+# SVG graphics device
+svg("Results/Plots/RewardTilesToMapCompletion.svg", width=6.5, height=5)
+
+ggplot(d[d$algorithm %in% c('PAIRED','PAIRED no negative reward'),])+
+  geom_point(aes(x=Step, y=Value, color=algorithm))+
+  geom_line(aes(x=Step, y=Value, color=algorithm))+
+  labs(x = "training steps",
+       y = "Tiles to Map Completion"
+       )+
+  theme_minimal()
+
+# Close the graphics device
+dev.off()
+
+```

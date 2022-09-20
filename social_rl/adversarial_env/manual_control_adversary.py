@@ -100,17 +100,8 @@ def get_user_input_environment(env, reparam=False):
   # placed by the adversary using a different action space.
   if not reparam:
     obj_type = 'wall'
-    if env.choose_goal_last:
-      if env.adversary_step_count == env.adversary_max_steps - 1:
-        obj_type = 'agent'
-      elif env.adversary_step_count == env.adversary_max_steps - 2:
-        obj_type = 'goal'
-    else:
-      # In the reparameterized environment.
-      if env.adversary_step_count == 0:
-        obj_type = 'goal'
-      elif env.adversary_step_count == 1:
-        obj_type = 'agent'
+    if env.adversary_step_count == 0:
+      obj_type = 'agent'
     prompt = 'Place ' + obj_type + ': enter an integer between ' + \
         str(max_action) + ' and ' + str(min_action) + ': '
   else:
@@ -162,30 +153,17 @@ def main(args):
       plt.imshow(env.render('rgb_array'))
       print(env)
 
-      if env.adversary_step_count > 1 and not env.choose_goal_last:
-        env.compute_shortest_path()
-        if not env.passable:
-          print(
-              'There is no possible path between the start position and goal.')
-        else:
-          print('The shortest path between the start position and goal '
-                'is length', env.shortest_path_length)
+      if env.adversary_step_count > 1:
+        env.calculate_findable_tiles()
+        print('The  number of findable tiles is', env.findable_tiles)
 
       if done:
         break
   else:
     env.reset_random()
 
-  if env.choose_goal_last:
-    if not env.passable:
-      print(
-          'There is no possible path between the start position and goal.')
-    else:
-      print('The shortest path between the start position and goal '
-            'is length', env.shortest_path_length)
-
+  print('The  number of findable tiles is', env.findable_tiles)
   print('Finished. A total of', env.n_clutter_placed, 'blocks were placed.')
-  print('Goal was placed at a distance of', env.distance_to_goal)
 
   # Agent-environment interaction loop
   for name in ['agent', 'adversary agent']:

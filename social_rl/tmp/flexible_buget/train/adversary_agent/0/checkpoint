@@ -1,0 +1,12 @@
+model_checkpoint_path: "ckpt-975"
+all_model_checkpoint_paths: "ckpt-0"
+all_model_checkpoint_paths: "ckpt-300"
+all_model_checkpoint_paths: "ckpt-600"
+all_model_checkpoint_paths: "ckpt-900"
+all_model_checkpoint_paths: "ckpt-975"
+all_model_checkpoint_timestamps: 1663594432.7370572
+all_model_checkpoint_timestamps: 1663599331.1043296
+all_model_checkpoint_timestamps: 1663604604.8177204
+all_model_checkpoint_timestamps: 1663609102.9137385
+all_model_checkpoint_timestamps: 1663609737.086515
+last_preserved_timestamp: 1663592920.052589

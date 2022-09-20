@@ -1,0 +1,147 @@
+# Parameters for ActorDistributionRnnNetwork:
+# ==============================================================================
+# None.
+
+# Parameters for ActorPolicy:
+# ==============================================================================
+ActorPolicy.name = None
+ActorPolicy.observation_and_action_constraint_splitter = None
+ActorPolicy.training = False
+
+# Parameters for AdversarialEnvironmentScalar:
+# ==============================================================================
+AdversarialEnvironmentScalar.buffer_size = 10
+AdversarialEnvironmentScalar.prefix = 'Metrics'
+
+# Parameters for AdversarialParallelPyEnvironment:
+# ==============================================================================
+AdversarialParallelPyEnvironment.blocking = False
+AdversarialParallelPyEnvironment.flatten = False
+AdversarialParallelPyEnvironment.start_serially = True
+
+# Parameters for ArraySpec:
+# ==============================================================================
+# None.
+
+# Parameters for tf_agents.AverageEpisodeLengthMetric:
+# ==============================================================================
+tf_agents.AverageEpisodeLengthMetric.buffer_size = 10
+tf_agents.AverageEpisodeLengthMetric.prefix = 'Metrics'
+
+# Parameters for tf_agents.AverageReturnMetric:
+# ==============================================================================
+tf_agents.AverageReturnMetric.buffer_size = 10
+tf_agents.AverageReturnMetric.prefix = 'Metrics'
+
+# Parameters for BoundedArraySpec:
+# ==============================================================================
+# None.
+
+# Parameters for CategoricalProjectionNetwork:
+# ==============================================================================
+# None.
+
+# Parameters for EncodingNetwork:
+# ==============================================================================
+# None.
+
+# Parameters for tf_agents.EnvironmentSteps:
+# ==============================================================================
+tf_agents.EnvironmentSteps.name = 'EnvironmentSteps'
+tf_agents.EnvironmentSteps.prefix = 'Metrics'
+
+# Parameters for GreedyPolicy:
+# ==============================================================================
+GreedyPolicy.name = None
+
+# Parameters for adversarial_env.load:
+# ==============================================================================
+adversarial_env.load.auto_reset = False
+adversarial_env.load.discount = 1.0
+adversarial_env.load.env_wrappers = ()
+adversarial_env.load.gym_env_wrappers = ()
+adversarial_env.load.gym_kwargs = None
+adversarial_env.load.max_episode_steps = None
+adversarial_env.load.spec_dtype_map = None
+
+# Parameters for LSTMEncodingNetwork:
+# ==============================================================================
+# None.
+
+# Parameters for tf_agents.NumberOfEpisodes:
+# ==============================================================================
+tf_agents.NumberOfEpisodes.name = 'NumberOfEpisodes'
+tf_agents.NumberOfEpisodes.prefix = 'Metrics'
+
+# Parameters for PPOAgent:
+# ==============================================================================
+# None.
+
+# Parameters for PPOClipAgent:
+# ==============================================================================
+PPOClipAgent.aggregate_losses_across_replicas = True
+PPOClipAgent.check_numerics = False
+PPOClipAgent.compute_value_and_advantage_in_train = True
+PPOClipAgent.discount_factor = 0.99
+PPOClipAgent.gradient_clipping = None
+PPOClipAgent.greedy_eval = True
+PPOClipAgent.lambda_value = 0.95
+PPOClipAgent.log_prob_clipping = 0.0
+PPOClipAgent.name = 'PPOClipAgent'
+PPOClipAgent.policy_l2_reg = 0.0
+PPOClipAgent.reward_norm_clipping = 10.0
+PPOClipAgent.shared_vars_l2_reg = 0.0
+PPOClipAgent.update_normalizers_in_train = True
+PPOClipAgent.use_td_lambda_return = False
+PPOClipAgent.value_clipping = None
+PPOClipAgent.value_function_l2_reg = 0.0
+PPOClipAgent.value_pred_loss_coef = 0.5
+
+# Parameters for PPOPolicy:
+# ==============================================================================
+PPOPolicy.compute_value_and_advantage_in_train = False
+
+# Parameters for TFPyEnvironment:
+# ==============================================================================
+# None.
+
+# Parameters for TFUniformReplayBuffer:
+# ==============================================================================
+TFUniformReplayBuffer.dataset_drop_remainder = False
+TFUniformReplayBuffer.dataset_window_shift = None
+TFUniformReplayBuffer.device = 'cpu:*'
+TFUniformReplayBuffer.scope = 'TFUniformReplayBuffer'
+TFUniformReplayBuffer.stateful_dataset = False
+
+# Parameters for train_eval:
+# ==============================================================================
+train_eval.actor_fc_layers = (32, 32)
+train_eval.adv_actor_fc_layers = (32, 32)
+train_eval.adv_conv_filters = 16
+train_eval.adv_conv_kernel = 3
+train_eval.adv_entropy_regularization = 0.0
+train_eval.adv_lstm_size = (128,)
+train_eval.adv_timestep_fc = 10
+train_eval.adv_value_fc_layers = (32, 32)
+train_eval.conv_filters = 8
+train_eval.conv_kernel = 3
+train_eval.debug_summaries = True
+train_eval.direction_fc = 5
+train_eval.entropy_regularization = 0.0
+train_eval.eval_interval = 10
+train_eval.eval_metrics_callback = None
+train_eval.learning_rate = 0.0001
+train_eval.log_interval = 5
+train_eval.lstm_size = (128,)
+train_eval.non_negative_regret = True
+train_eval.policy_checkpoint_interval = 100
+train_eval.summaries_flush_secs = 1
+train_eval.summarize_grads_and_vars = True
+train_eval.summary_interval = 5
+train_eval.train_checkpoint_interval = 100
+train_eval.use_tf_functions = True
+train_eval.value_fc_layers = (32, 32)
+
+# Parameters for ValueRnnNetwork:
+# ==============================================================================
+# None.

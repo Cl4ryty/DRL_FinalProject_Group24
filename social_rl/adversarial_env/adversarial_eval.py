@@ -134,6 +134,8 @@ def record_metrics(metrics, train_step, summary_writer, summary_prefix):
     with summary_writer.as_default():
       for m in metrics:
         tag = common.join_scope(summary_prefix, m.name)
-        tf.compat.v2.summary.scalar(
+        tf.summary.scalar(
             name=tag, data=m.result(), step=train_step)
+        print("supercalifragilisticexpialidocious")
+        summary_writer.flush()
 

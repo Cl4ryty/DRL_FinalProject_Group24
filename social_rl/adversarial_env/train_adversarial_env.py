@@ -1,5 +1,6 @@
 # coding=utf-8
 # Copyright 2022 The Google Research Authors.
+# Modifications copyright (C) 2022 Cl4ryty, goody139
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -51,6 +52,8 @@ from social_rl.adversarial_env import agent_train_package
 
 flags.DEFINE_string('root_dir', os.getenv('TEST_UNDECLARED_OUTPUTS_DIR'),
                     'Root directory for writing logs/summaries/checkpoints.')
+flags.DEFINE_integer('random_seed', 42,
+                    'Seed for random numbers.')
 flags.DEFINE_string('env_name', 'MultiGrid-Adversarial-v0',
                     'Name of an environment')
 flags.DEFINE_integer('replay_buffer_capacity', 3001,
@@ -192,11 +195,11 @@ def train_eval(
   train_dir = os.path.join(root_dir, 'train')
   eval_dir = os.path.join(root_dir, 'eval')
 
-  train_summary_writer = tf.compat.v2.summary.create_file_writer(
+  train_summary_writer = tf.summary.create_file_writer(
       train_dir, flush_millis=summaries_flush_secs * 1000)
   train_summary_writer.set_as_default()
 
-  eval_summary_writer = tf.compat.v2.summary.create_file_writer(
+  eval_summary_writer = tf.summary.create_file_writer(
       eval_dir, flush_millis=summaries_flush_secs * 1000)
 
   # Initialize global step and random seed
@@ -225,16 +228,13 @@ def train_eval(
 
     # Logging for special environment metrics
     env_metrics_names = [
-        'DistanceToGoal',
+        # 'DistanceToGoal',
         'NumBlocks',
         'DeliberatePlacement',
         'NumEnvEpisodes',
-        'GoalX',
-        'GoalY',
-        'IsPassable',
-        'ShortestPathLength',
-        'ShortestPassablePathLength',
-        'SolvedPathLength',
+        'TilesFound',
+        'TilesToMapCompletion',
+        'FindableTiles',
         'TrainEpisodesCollected',
     ]
     env_train_metrics = []
@@ -360,7 +360,9 @@ def train_eval(
         disable_tf_function=True,  # TODO(natashajaques): enable tf functions
         debug=debug,
         combined_population=combined_population,
-        flexible_protagonist=flexible_protagonist)
+        flexible_protagonist=flexible_protagonist,
+        root_dir=root_dir
+    )
     eval_driver = adversarial_driver.AdversarialDriver(
         eval_tf_env,
         agents['agent'],
@@ -371,7 +373,9 @@ def train_eval(
         disable_tf_function=True,  # TODO(natashajaques): enable tf functions
         debug=False,
         combined_population=combined_population,
-        flexible_protagonist=flexible_protagonist)
+        flexible_protagonist=flexible_protagonist,
+        root_dir=root_dir
+    )
 
     collect_time = 0
     train_time = 0
@@ -395,6 +399,7 @@ def train_eval(
 
       # Evaluation
       if global_step_val % eval_interval == 0:
+        collect_video = True
         if debug:
           logging.info('Performing evaluation at step %d', global_step_val)
         results = adversarial_eval.eager_compute(
@@ -408,6 +413,8 @@ def train_eval(
         if eval_metrics_callback is not None:
           eval_metrics_callback(results, global_step.numpy())
         adversarial_eval.log_metrics(agents, env_eval_metrics)
+      else:
+          collect_video = False
 
       # Used to interleave randomized episodes with adversarial training
       random_episodes = False
@@ -420,7 +427,7 @@ def train_eval(
       # Collect data
       if debug: logging.info('Collecting at step %d', global_step_val)
       start_time = time.time()
-      train_idxs = collect_driver.run(random_episodes=random_episodes)
+      train_idxs = collect_driver.run(random_episodes=random_episodes, collect_video=collect_video)
       collect_time += time.time() - start_time
       if debug:
         logging.info('Trained agents: %s', ', '.join(train_idxs))
@@ -543,6 +550,7 @@ def main(_):
   train_eval(
       FLAGS.root_dir,
       env_name=FLAGS.env_name,
+      random_seed=FLAGS.random_seed,
       agents_learn_with_regret=not FLAGS.agent_regret_off,
       unconstrained_adversary=FLAGS.unconstrained_adversary,
       domain_randomization=FLAGS.domain_randomization,

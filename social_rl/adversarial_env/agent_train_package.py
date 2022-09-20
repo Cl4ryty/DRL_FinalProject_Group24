@@ -1,5 +1,6 @@
 # coding=utf-8
 # Copyright 2022 The Google Research Authors.
+# Modifications copyright (C) 2022 Cl4ryty, goody139
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,6 +32,7 @@ from tf_agents.utils import common
 
 from social_rl.adversarial_env import adversarial_eval
 from social_rl.multiagent_tfagents import multigrid_networks
+
 
 
 class AgentTrainPackage(object):
